@@ -13,7 +13,7 @@ var port = process.env.PORT || 3000;
 
 /** this project needs a db !! **/ 
 mongoose.connect(process.env.MONGO_URI);
-const Schema = mongoose.Schema();
+const Schema = mongoose.Schema;
 const dns = require('dns');
 
 app.use(cors());
@@ -28,13 +28,26 @@ app.get('/', function(req, res){
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
+var urlSchema = new Schema({
+  original_url: {type: String},
+  short_url: {type: Number}
+})
+
+const URL = mongoose.model('URL', urlSchema);
   
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 app.route('/api/shorturl/new')
-  .get((req,res)=>{})
+  .get((req,res)=>{
+    dns.lookup(req.params,function(err,address,family){
+      if (err){return {"error":"invalid URL"}}
+      var u = new URL;
+      u.original_url = address;
+      u.short_url = u.
+    })
+})
 
 
 
