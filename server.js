@@ -39,7 +39,7 @@ const URL = mongoose.model('URL', urlSchema);
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
-app.route('/api/shorturl/new').post((req,res)=>{
+app.route('/api/shorturl/new/').post((req,res)=>{
   dns.lookup(req.body,function(err,address,family){
     if (err){return {"error":"invalid URL"}}
   })
