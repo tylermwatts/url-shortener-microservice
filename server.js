@@ -42,8 +42,9 @@ app.get("/api/hello", function (req, res) {
 app.route('/api/shorturl/new').post((req,res)=>{
   dns.lookup(req.body,function(err,address,family){
     if (err){return {"error":"invalid URL"}}
-    
   })
+  var url = URL.create({original_url: req.body, short_url: 0})
+  url.short_url = url.id;
 })
 
 
