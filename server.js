@@ -35,14 +35,13 @@ const urlSchema = new mongoose.Schema({
 const URL = mongoose.model('URL', urlSchema);
 
 const createAndSaveURL = function(fullUrl, done){
-  var shortUrl = URL.countDocument({}, );
-  var u = new URL({original_url: fullUrl});
-  console.log(u);
-  u.save(function(err,data){
-    if (err){return done(err)}
-    console.log(data);
-    return done(null,data);
-  })
+  var shortUrl = URL.countDocument({}, function(err,count){
+    var u = new URL({original_url: fullUrl, short_url: count});
+    u.save(function(err,data){
+      if (err){return done(err)}
+      return done(null,data);
+    })
+  });
 }
   
 // your first API endpoint... 
@@ -51,9 +50,15 @@ app.get("/api/hello", function (req, res) {
 });
 app.route('/api/shorturl/new/').post((req,res)=>{
   dns.lookup(req.body.url,function(err,address,family){
-    if (err){return {"error":"invalid URL"}}
+    if (err){res.json({"error":"invalid URL"})}
+    createAndSaveURL(req.body.url);
   })
-  createAndSaveURL(req.body.url);
+})
+
+app.route('/api/short_url/:shorty').get((req, res)=>{
+  URL.find({short_url: req.params.shorty},function(err,data){
+    if (err){res.json({"error":"invalid URL"})}
+  })
 })
 
 app.listen(port, function () {
