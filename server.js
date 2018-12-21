@@ -62,11 +62,12 @@ app.route('/api/shorturl/new/').post((req,res)=>{
   })
 })
 
-app.route('/api/shorturl/:shorty').get((req, res)=>{
-  console.log(req.params.shorty);
+app.get('/api/shorturl/:shorty/',(req, res)=>{
+  console.log(req.params.shorty + " getting shorty");
   URL.find({short_url: req.params.shorty},function(err,data){
     if (err){return res.json({"error": err})}
-    res.redirect(data.original_url);
+    console.log(data);
+    res.redirect('https:\/\/' + data["original_url"]);
   })
 })
 
