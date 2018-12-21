@@ -59,4 +59,3 @@ app.listen(port, function () {
   console.log('Node.js listening ...');
 });
 
-createAndSaveURL('http://www.google.com');
