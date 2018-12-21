@@ -49,6 +49,7 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 app.route('/api/shorturl/new/').post((req,res)=>{
+  
   dns.lookup(req.body.url,function(err,address,family){
     if (err){return res.json({"error": err})}
     createAndSaveURL(req.body.url,(err,data)=>{
