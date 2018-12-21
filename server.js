@@ -33,9 +33,10 @@ const urlSchema = new mongoose.Schema({
 })
 
 const URL = mongoose.model('URL', urlSchema);
+console.log(URL)
 
 const createAndSaveURL = function(fullUrl, done){
-  var shortUrl = URL.countDocument({}, function(err,count){
+  URL.countDocuments({}, function(err,count){
     var u = new URL({original_url: fullUrl, short_url: count});
     u.save(function(err,data){
       if (err){return done(err)}
@@ -58,6 +59,7 @@ app.route('/api/shorturl/new/').post((req,res)=>{
 app.route('/api/short_url/:shorty').get((req, res)=>{
   URL.find({short_url: req.params.shorty},function(err,data){
     if (err){res.json({"error":"invalid URL"})}
+    res.redirect(data.original_url);
   })
 })
 
