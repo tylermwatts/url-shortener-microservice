@@ -33,12 +33,11 @@ const urlSchema = new mongoose.Schema({
 })
 
 const URL = mongoose.model('URL', urlSchema);
-console.log(URL)
 
 const createAndSaveURL = function(fullUrl, done){
-  URL.countDocuments({}, function(err,count){
+  URL.countDocuments({}, (err,count)=>{
     var u = new URL({original_url: fullUrl, short_url: count});
-    u.save(function(err,data){
+    u.save((err,data)=>{
       if (err){return done(err)}
       return done(null,data);
     })
@@ -52,7 +51,12 @@ app.get("/api/hello", function (req, res) {
 app.route('/api/shorturl/new/').post((req,res)=>{
   dns.lookup(req.body.url,function(err,address,family){
     if (err){res.json({"error":"invalid URL"})}
-    createAndSaveURL(req.body.url);
+    createAndSaveURL(req.body.url,(err,data)=>{
+      if (err){
+        res.json({"error":"unable to create short url"})
+      }
+      return res.json(data);
+    });
   })
 })
 
