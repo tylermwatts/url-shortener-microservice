@@ -35,22 +35,28 @@ const urlSchema = new mongoose.Schema({
 const URL = mongoose.model('URL', urlSchema);
 
 const createAndSaveURL = function(fullUrl, done){
-  var u = new URL;
-  u.original_url = fullUrl;
-  
+  var u = new URL({original_url: fullUrl, short_url: null});
+  console.log(u);
+  u.save(function(err,data){
+    if (err){return done(err)}
+    console.log(data);
+    return done(null,data);
+  })
 }
   
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
-app.route('/api/shorturl/new/:url').post((req,res)=>{
-  dns.lookup(req.params.url,function(err,address,family){
+app.route('/api/shorturl/new/').post((req,res)=>{
+  dns.lookup(req.body.url,function(err,address,family){
     if (err){return {"error":"invalid URL"}}
   })
-  
+  createAndSaveURL(req.body.url);
 })
 
 app.listen(port, function () {
   console.log('Node.js listening ...');
 });
+
+createAndSaveURL('http://www.google.com');
