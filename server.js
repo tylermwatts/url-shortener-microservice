@@ -50,10 +50,10 @@ app.get("/api/hello", function (req, res) {
 });
 app.route('/api/shorturl/new/').post((req,res)=>{
   dns.lookup(req.body.url,function(err,address,family){
-    if (err){res.json({"error":"invalid URL"})}
+    if (err){return res.json({"error": err})}
     createAndSaveURL(req.body.url,(err,data)=>{
       if (err){
-        res.json({"error":"unable to create short url"})
+        return res.json({"error":"unable to create short url"})
       }
       return res.json(data);
     });
