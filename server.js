@@ -35,7 +35,8 @@ const urlSchema = new mongoose.Schema({
 const URL = mongoose.model('URL', urlSchema);
 
 const createAndSaveURL = function(fullUrl, done){
-  var u = new URL({original_url: fullUrl, short_url: null});
+  var shortUrl = URL.countDocument({}, );
+  var u = new URL({original_url: fullUrl});
   console.log(u);
   u.save(function(err,data){
     if (err){return done(err)}
