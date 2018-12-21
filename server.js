@@ -36,6 +36,7 @@ const URL = mongoose.model('URL', urlSchema);
 
 const createAndSaveURL = function(fullUrl, done){
   URL.countDocuments({}, (err,count)=>{
+    console.log(count);
     var u = new URL({original_url: fullUrl, short_url: count});
     u.save((err,data)=>{
       if (err){return done(err)}
@@ -49,10 +50,10 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 app.route('/api/shorturl/new/').post((req,res)=>{
-  
-  dns.lookup(req.body.url,function(err,address,family){
+  var strippedUrl = req.body.url.replace(/^https?:\/\//i, '')
+  dns.lookup(strippedUrl,function(err,address,family){
     if (err){return res.json({"error": err})}
-    createAndSaveURL(req.body.url,(err,data)=>{
+    createAndSaveURL(strippedUrl,(err,data)=>{
       if (err){
         return res.json({"error":"unable to create short url"})
       }
@@ -61,9 +62,10 @@ app.route('/api/shorturl/new/').post((req,res)=>{
   })
 })
 
-app.route('/api/short_url/:shorty').get((req, res)=>{
+app.route('/api/shorturl/:shorty').get((req, res)=>{
+  console.log(req.params.shorty);
   URL.find({short_url: req.params.shorty},function(err,data){
-    if (err){res.json({"error":"invalid URL"})}
+    if (err){return res.json({"error": err})}
     res.redirect(data.original_url);
   })
 })
