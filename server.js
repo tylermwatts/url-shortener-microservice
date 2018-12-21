@@ -13,7 +13,6 @@ var port = process.env.PORT || 3000;
 
 /** this project needs a db !! **/ 
 mongoose.connect(process.env.MONGO_URI);
-const Schema = mongoose.Schema;
 const dns = require('dns');
 
 app.use(cors());
@@ -28,14 +27,14 @@ app.get('/', function(req, res){
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
-var urlSchema = new Schema({
+const urlSchema = new mongoose.Schema({
   original_url: {type: String},
   short_url: {type: Number}
 })
 
 const URL = mongoose.model('URL', urlSchema);
 
-var createAndSaveURL = function(fullUrl, done){
+const createAndSaveURL = function(fullUrl, done){
   var u = new URL;
   u.original_url = fullUrl;
   
