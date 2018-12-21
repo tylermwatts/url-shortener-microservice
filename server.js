@@ -34,20 +34,23 @@ var urlSchema = new Schema({
 })
 
 const URL = mongoose.model('URL', urlSchema);
+
+var createAndSaveURL = function(fullUrl, done){
+  var u = new URL;
+  u.original_url = fullUrl;
+  
+}
   
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
-app.route('/api/shorturl/new/').post((req,res)=>{
-  dns.lookup(req.body,function(err,address,family){
+app.route('/api/shorturl/new/:url').post((req,res)=>{
+  dns.lookup(req.params.url,function(err,address,family){
     if (err){return {"error":"invalid URL"}}
   })
-  var url = URL.create({original_url: req.body, short_url: 0})
-  url.short_url = url.id;
+  
 })
-
-
 
 app.listen(port, function () {
   console.log('Node.js listening ...');
